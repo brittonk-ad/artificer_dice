@@ -10,12 +10,12 @@
     Delays are pulsed to prevent stalling the accelerometer readings. 
   
   TO DO:
+    Low Power Code: Check every 3 seconds for change?
     Finesse Animation to coincide with tossing
-    Finesse Sensing so that the random flickering will end with a singular roll.
     Basic PWM animation while in "Sleep Mode"
     Else-If statement in loop that determines roll so that the random animation can work during the toss.
       Will require a sort of recalibration.
-    Low-pass Filter
+    Low-pass Filter: Removing noise
 */
 
 #include <Adafruit_NeoPixel.h>
@@ -60,7 +60,7 @@ void loop() {
   
   //delay(100);        //Change to determine sensitivitiy of the toss, may be unnecessary...
 
-  if(change > 150){  //Increase to determine sensitivitiy
+  if(change > 100){  //Increase to determine sensitivitiy
     int roll = random(1, 20+1);
     int rollStop = 0;
 
@@ -78,7 +78,7 @@ void loop() {
       delay(10);
       }
       
-    for (rollStop = 0; rollStop < 25; rollStop++){ //Determine roll while continuously reading/pulsing Accelerometer
+    for (rollStop = 0; rollStop < 30; rollStop++){ //Determine roll while continuously reading/pulsing Accelerometer
       int accelX = analogRead(A5); 
       int accelY = analogRead(A4);
       int accelZ = analogRead(A3);
@@ -89,6 +89,12 @@ void loop() {
       strip.setPixelColor(roll, 255, 255, 255);            //Determine's roll
       delay(100);                    //ANTI-LOCK BREAKS!
       strip.show();
+      }
+      
+    for (rollStop = 0 ; count < 10 ; rollStop++){ //Turn all LED's OFF in succession
+      strip.setPixelColor(roll, 0, 0, 0);
+      strip.show();
+      delay(100);
       }
     }
 
